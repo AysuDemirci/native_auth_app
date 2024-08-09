@@ -8,12 +8,19 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { Loading, CustomTextInput, CustomButton } from "../components/Index";
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLoading } from "../redux/UserSlice";
+import { login } from "../redux/UserSlice";
 
 export default function LoginPage({ navigation }) {
-  const [password, setPassword] = useState("");
+  //UserSlice içerisindeki verilerin okunması
+
+  const { isLoading } = useSelector((state) => state.user);
   const [email, setEmail] = useState("");
-  const [result, setResult] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [password, setPassword] = useState("");
+
+  //UserSlic içerisindeki reducer yapılarını kullanma veya veri gönderme
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.container}>
@@ -25,21 +32,21 @@ export default function LoginPage({ navigation }) {
       <CustomTextInput
         title="Email"
         isSecureText={false}
-        handleOnChangeText={setEmail}
+        handleOnChangeText={(text) => setEmail(text)}
         handleValue={email}
         handlePlaceholder="Enter Your Email"
       />
       <CustomTextInput
         title="Password"
         isSecureText={true}
-        handleOnChangeText={setPassword}
+        handleOnChangeText={(password) => setPassword(password)}
         handleValue={password}
         handlePlaceholder="Enter Your Password"
       />
       <CustomButton
-        buttonText="Save"
+        buttonText="Login"
         setWidth="80%"
-        handleOnPress={() => setIsLoading(true)}
+        handleOnPress={() => dispatch(login({ email, password }))}
         buttonColor="#6864f7"
         pressedButtonColor="lightgray"
       />
@@ -51,7 +58,7 @@ export default function LoginPage({ navigation }) {
         pressedButtonColor="lightgray"
       />
       {isLoading ? (
-        <Loading changeIsLoading={() => setIsLoading(false)} />
+        <Loading changeIsLoading={() => dispatch(setIsLoading(false))} />
       ) : null}
     </View>
   );
